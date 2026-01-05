@@ -178,7 +178,7 @@ This project demonstrates a complete and reproducible machine learning pipeline 
 Below are screenshots of the Mecca Weather Prediction System in action:
 
 <p align="center">
-  <img src="docs/images/demo1.png" alt="Demo 1" width="800" />
+  <img src="/Users/samalruhili/Desktop/REPORT/demo3.png" alt="Demo 1" width="800" />
 </p>
 <p align="center">
   <img src="docs/images/demo2.png" alt="Demo 2" width="800" />
@@ -188,3 +188,4 @@ Below are screenshots of the Mecca Weather Prediction System in action:
 </p>
 
 These images show the user interface, prediction results for two days, and the overall look and feel of the deployed application.
+
