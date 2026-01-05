@@ -4,18 +4,157 @@
 
 <!-- Begin index.html content -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mecca Weather Prediction System</title>
+    <title>Weather Forecast - Mecca</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Mecca Weather Prediction System</h1>
-    <p>This is a static copy of the web interface. For full functionality, run the backend Flask server locally and access via <a href="http://localhost:5000">http://localhost:5000</a>.</p>
-    <!-- You can copy the rest of your index.html content here -->
-    <!-- ...existing code... -->
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cloud-sun"></i> Mecca Weather</h1>
+            <p><i class="fas fa-brain"></i> AI Powered</p>
+        </header>
+
+        <section class="input-section">
+            <div class="input-group">
+                <input type="date" id="dateInput">
+                <button class="predict-btn" onclick="predict()">
+                    <i class="fas fa-search"></i> Predict
+                </button>
+            </div>
+        </section>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Predicting...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <section class="results" id="results">
+            <div id="daysContainer"></div>
+        </section>
+
+        <footer>
+            <p>Machine Learning Weather Prediction</p>
+        </footer>
+    </div>
+
+    <script>
+        // Set default date
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+        });
+
+        async function predict() {
+            const dateInput = document.getElementById('dateInput').value;
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!dateInput) {
+                showError('Please select a date');
+                return;
+            }
+
+            errorMessage.classList.remove('active');
+            results.classList.remove('active');
+            loading.classList.add('active');
+
+            try {
+                // For GitHub Pages, show a message instead of making a backend call
+                if (window.location.hostname.endsWith('github.io')) {
+                    throw new Error('Prediction is only available when running locally with the backend server.');
+                }
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: dateInput })
+                });
+
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                displayResults(data);
+                loading.classList.remove('active');
+                results.classList.add('active');
+
+            } catch (error) {
+                loading.classList.remove('active');
+                showError(error.message || 'Connection error');
+            }
+        }
+
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            el.classList.add('active');
+        }
+
+        function displayResults(data) {
+            const container = document.getElementById('daysContainer');
+            container.innerHTML = '';
+
+            if (data.day1?.data?.length > 0) {
+                container.innerHTML += createDayCard(data.day1, 'Day 1');
+            }
+            if (data.day2?.data?.length > 0) {
+                container.innerHTML += createDayCard(data.day2, 'Day 2');
+            }
+        }
+
+        function createDayCard(day, title) {
+            const s = day.summary;
+            let rows = '';
+
+            day.data.forEach(h => {
+                const tc = h.temperature > 40 ? 'temp-high' : h.temperature > 30 ? 'temp-mid' : 'temp-low';
+                rows += `
+                    <div class="hour-row">
+                        <span class="hour-time">${h.hour}</span>
+                        <span class="hour-temp ${tc}">${h.temperature}°</span>
+                        <span class="hour-humidity">${h.humidity}%</span>
+                        <span class="hour-wind">${h.wind_speed} km/h</span>
+                    </div>
+                `;
+            });
+
+            return `
+                <div class="day-card">
+                    <div class="day-header">
+                        <span class="day-title">${title}</span>
+                        <span class="day-date">${day.day_name}, ${day.date}</span>
+                    </div>
+                    
+                    <div class="summary">
+                        <div class="summary-item temp">
+                            <i class="fas fa-thermometer-half"></i>
+                            <div class="summary-value">${s.temp_max}° / ${s.temp_min}°</div>
+                            <div class="summary-label">High / Low</div>
+                        </div>
+                        <div class="summary-item humidity">
+                            <i class="fas fa-tint"></i>
+                            <div class="summary-value">${s.humidity_avg}%</div>
+                            <div class="summary-label">Humidity</div>
+                        </div>
+                        <div class="summary-item wind">
+                            <i class="fas fa-wind"></i>
+                            <div class="summary-value">${s.wind_avg}</div>
+                            <div class="summary-label">Wind km/h</div>
+                        </div>
+                    </div>
+
+                    <div class="hourly-list">${rows}</div>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>
 <!-- End index.html content -->
