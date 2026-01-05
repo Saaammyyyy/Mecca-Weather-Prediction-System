@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast - Mecca</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            min-height: 100vh;
+            color: #e2e8f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-size: 0.8em;
+            color: #94a3b8;
+        }
+
+        .badge i {
+            color: #8b5cf6;
+        }
+
+        .input-section {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #fff;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .predict-btn {
+            background: #8b5cf6;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .predict-btn:hover {
+            background: #7c3aed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #334155;
+            border-top-color: #8b5cf6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .day-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .day-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .day-date {
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .summary {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .summary-item {
+            background: #0f172a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .summary-item i {
+            font-size: 1.2em;
+            margin-bottom: 6px;
+        }
+
+        .summary-item.temp i { color: #f87171; }
+        .summary-item.humidity i { color: #22d3ee; }
+        .summary-item.wind i { color: #60a5fa; }
+
+        .summary-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .summary-label {
+            font-size: 0.75em;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .hourly-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .hourly-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .hourly-list::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 2px;
+        }
+
+        .hour-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+            font-size: 0.9em;
+        }
+
+        .hour-row:last-child {
+            border-bottom: none;
+        }
+
+        .hour-time {
+            color: #94a3b8;
+            width: 60px;
+        }
+
+        .hour-temp {
+            font-weight: 500;
+            width: 60px;
+            text-align: center;
+        }
+
+        .hour-humidity, .hour-wind {
+            color: #64748b;
+            width: 80px;
+            text-align: right;
+        }
+
+        .temp-high { color: #f87171; }
+        .temp-mid { color: #fbbf24; }
+        .temp-low { color: #34d399; }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            color: #f87171;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #475569;
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 600px) {
+            .summary {
+                flex-direction: column;
+            }
+            
+            .summary-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cloud-sun"></i> Mecca Weather</h1>
+            <p><i class="fas fa-brain"></i> AI Powered</p>
+        </header>
+
+        <section class="input-section">
+            <div class="input-group">
+                <input type="date" id="dateInput">
+                <button class="predict-btn" onclick="predict()">
+                    <i class="fas fa-search"></i> Predict
+                </button>
+            </div>
+        </section>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Predicting...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <section class="results" id="results">
+            <div id="daysContainer"></div>
+        </section>
+
+        <footer>
+            <p>Machine Learning Weather Prediction</p>
+        </footer>
+    </div>
+
+    <script>
+        // Set default date
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+        });
+
+        async function predict() {
+            const dateInput = document.getElementById('dateInput').value;
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!dateInput) {
+                showError('Please select a date');
+                return;
+            }
+
+            errorMessage.classList.remove('active');
+            results.classList.remove('active');
+            loading.classList.add('active');
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date: dateInput })
+                });
+
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                displayResults(data);
+                loading.classList.remove('active');
+                results.classList.add('active');
+
+            } catch (error) {
+                loading.classList.remove('active');
+                showError(error.message || 'Connection error');
+            }
+        }
+
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            el.classList.add('active');
+        }
+
+        function displayResults(data) {
+            const container = document.getElementById('daysContainer');
+            container.innerHTML = '';
+
+            if (data.day1?.data?.length > 0) {
+                container.innerHTML += createDayCard(data.day1, 'Day 1');
+            }
+            if (data.day2?.data?.length > 0) {
+                container.innerHTML += createDayCard(data.day2, 'Day 2');
+            }
+        }
+
+        function createDayCard(day, title) {
+            const s = day.summary;
+            let rows = '';
+
+            day.data.forEach(h => {
+                const tc = h.temperature > 40 ? 'temp-high' : h.temperature > 30 ? 'temp-mid' : 'temp-low';
+                rows += `
+                    <div class="hour-row">
+                        <span class="hour-time">${h.hour}</span>
+                        <span class="hour-temp ${tc}">${h.temperature}°</span>
+                        <span class="hour-humidity">${h.humidity}%</span>
+                        <span class="hour-wind">${h.wind_speed} km/h</span>
+                    </div>
+                `;
+            });
+
+            return `
+                <div class="day-card">
+                    <div class="day-header">
+                        <span class="day-title">${title}</span>
+                        <span class="day-date">${day.day_name}, ${day.date}</span>
+                    </div>
+                    
+                    <div class="summary">
+                        <div class="summary-item temp">
+                            <i class="fas fa-thermometer-half"></i>
+                            <div class="summary-value">${s.temp_max}° / ${s.temp_min}°</div>
+                            <div class="summary-label">High / Low</div>
+                        </div>
+                        <div class="summary-item humidity">
+                            <i class="fas fa-tint"></i>
+                            <div class="summary-value">${s.humidity_avg}%</div>
+                            <div class="summary-label">Humidity</div>
+                        </div>
+                        <div class="summary-item wind">
+                            <i class="fas fa-wind"></i>
+                            <div class="summary-value">${s.wind_avg}</div>
+                            <div class="summary-label">Wind km/h</div>
+                        </div>
+                    </div>
+
+                    <div class="hourly-list">${rows}</div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

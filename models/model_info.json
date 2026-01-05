@@ -1,0 +1,25 @@
+{
+  "lookback": 24,
+  "forecast_hours": 48,
+  "features": [
+    "temperature",
+    "humidity",
+    "wind_speed",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "day_of_year_sin",
+    "day_of_year_cos"
+  ],
+  "targets": [
+    "temperature",
+    "humidity",
+    "wind_speed"
+  ],
+  "data_stats": {
+    "temp_min": 14.3,
+    "temp_max": 40.2,
+    "temp_mean": 27.146349999999998
+  }
+}
