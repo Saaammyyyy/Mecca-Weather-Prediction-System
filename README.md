@@ -184,10 +184,11 @@ Below are screenshots of the Mecca Weather Prediction System in action:
   <img src="https://github.com/Saaammyyyy/Mecca-Weather-Prediction-System/blob/d00869b3535895f48f824fc61b3092b4fee0f376/demo2.png" alt="Demo 2" width="800" />
 </p>
 <p align="center">
-  <img src="[[docs/images/demo3.png](https://github.com/Saaammyyyy/Mecca-Weather-Prediction-System/blob/d00869b3535895f48f824fc61b3092b4fee0f376/demo3.png)](https://github.com/Saaammyyyy/Mecca-Weather-Prediction-System/blob/d00869b3535895f48f824fc61b3092b4fee0f376/demo3.png)" alt="Demo 3" width="800" />
+  <img src="https://github.com/Saaammyyyy/Mecca-Weather-Prediction-System/blob/d00869b3535895f48f824fc61b3092b4fee0f376/demo3.png" alt="Demo 3" width="800" />
 </p>
 
 These images show the user interface, prediction results for two days, and the overall look and feel of the deployed application.
+
 
 
 
