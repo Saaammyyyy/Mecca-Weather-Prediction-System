@@ -173,26 +173,18 @@ The application is restricted to local execution
 
 This project demonstrates a complete and reproducible machine learning pipeline for short-term weather prediction in Mecca. By combining historical data, feature engineering, and ensemble regression techniques within a locally hosted web application, the system provides accurate and interpretable hourly forecasts. The project serves as a strong academic example of applied machine learning for time-series forecasting.
 
----
-Academic Abstract and Reproducibility Notes
+## Demonstration
 
-Abstract  
-This repository presents a reproducible machine learning pipeline for short-term (hourly) weather forecasting in Mecca. The system uses engineered temporal features and a Gradient Boosting Regressor to jointly predict temperature, humidity, and wind speed for a 48‑hour horizon. All preprocessing steps, model artifacts, and example inference code are provided to support transparent evaluation and replication.
+Below are screenshots of the Mecca Weather Prediction System in action:
 
-Experimental Setup and Evaluation  
-- Dataset: hourly historical observations (mecca_weather_hourly.json).  
-- Train/validation split: chronological holdout to mimic real forecasting.  
-- Features: lagged observations (24‑hour lookback), cyclical encodings for hour/day/month, and standard scaling.  
-- Model: Gradient Boosting Regressor trained to predict three outputs simultaneously.  
-- Evaluation metrics: Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and coefficient of determination (R²). Report metric values on the held-out validation window and include confidence intervals where appropriate.
+<p align="center">
+  <img src="docs/images/demo1.png" alt="Demo 1" width="800" />
+</p>
+<p align="center">
+  <img src="docs/images/demo2.png" alt="Demo 2" width="800" />
+</p>
+<p align="center">
+  <img src="docs/images/demo3.png" alt="Demo 3" width="800" />
+</p>
 
-Reproducibility and Usage  
-- Environment: create a virtual environment and install dependencies: pip install -r requirements.txt  
-- To retrain the model: python train_model.py  
-- To run the local web interface: python app.py (access at http://localhost:5000)  
-- All trained artifacts are saved under `models/`. For reproducibility, store random seeds and hyperparameters in `models/model_info.json`.
-
-Acknowledgements and Citation  
-If you use this work in academic outputs, please cite this repository and include a short description of the experimental setup. Consider adding a DOI via Zenodo for archival citation.
-
----
+These images show the user interface, prediction results for two days, and the overall look and feel of the deployed application.
